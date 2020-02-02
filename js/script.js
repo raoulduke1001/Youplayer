@@ -113,12 +113,15 @@ function openModal() {
 
 function closeModal() {
     modal.style.display = 'none';
+    player.stopVideo();
 };
 
 function bindModals(cards) {
     cards.forEach(item => {
         item.addEventListener('click', (e) => {
-            e.preventDefault()
+            e.preventDefault();
+            const id = item.getAttribute('data-url');
+            loadVideo(id);
             openModal();
         })
     })
@@ -128,7 +131,9 @@ bindModals(videos);
 
 function bindNewModals(card) {
     card.addEventListener('click', (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        const id = card.getAttribute('data-url');
+        loadVideo(id);
         openModal();
     })
 };
@@ -154,3 +159,7 @@ function createVideo() {
     }, 300);
 }
 createVideo();
+
+function loadVideo(id){
+    player.loadVideoById({'videoId':`${id}`}) 
+}
