@@ -162,7 +162,7 @@ function search(target) {
         console.log(response.result);
         //videoWrapper.innerHTML = "";
         while(videoWrapper.firstChild){
-            videoWrapper.remove(videoWrapper.firstChild)
+            videoWrapper.removeChild(videoWrapper.firstChild)
         };
 
         response.result.items.forEach(item => {
