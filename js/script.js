@@ -3,6 +3,9 @@ const switcher = document.querySelector('#cbx'),
     modal = document.querySelector('.modal'),
     videos = document.querySelectorAll('.videos__item');
 
+const videoWrapper = document.querySelector('.videos__wrapper');
+
+
 let player;
 
 function bindSideToggle(target, boxBody, content, openClass) {
@@ -110,7 +113,6 @@ function start() {
         })
     }).then(function (response) {
         console.log(response.result);
-        const videoWrapper = document.querySelector('.videos__wrapper');
         response.result.items.forEach(item => {
             let card = document.createElement('a');
 
@@ -151,13 +153,40 @@ function search(target) {
         'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"]
     }).then(function () {
         return gapi.client.youtube.search.list({
-            'maxResult': '10',
+            'maxResults': '10',
             'part': 'snippet',
             'q': `${target}`,
             'type': ''
         });
     }).then(function (response) {
         console.log(response.result);
+        //videoWrapper.innerHTML = "";
+        while(videoWrapper.firstChild){
+            videoWrapper.remove(videoWrapper.firstChild)
+        };
+
+        response.result.items.forEach(item => {
+            let card = document.createElement('a');
+
+            card.classList.add('videos__item', "videos__item-active");
+            card.setAttribute('data-url', item.id.videoId);
+            card.innerHTML = `<img src="${item.snippet.thumbnails.high.url}" alt="thumb">
+        <div class="videos__item-descr">
+            ${item.snippet.title} </div>
+        <div class="videos__item-views">
+            1 просмотр
+        </div>`;
+            videoWrapper.appendChild(card);
+            setTimeout(() => {
+                card.classList.remove("videos__item-active")
+            }, 10);
+            if (night === true) {
+                card.querySelector('.videos__item-descr').style.color = '#fff';
+                card.querySelector('.videos__item-views').style.color = '#fff';
+            }
+        })
+        sliceTitle('.videos__item-descr', 100);
+        bindModals(document.querySelectorAll('.videos__item'));
     })
 }
 
@@ -168,6 +197,7 @@ document.querySelector('.search').addEventListener('submit', (e) => {
             document.querySelector('.search > input').value
         )
     })
+    document.querySelector('.search > input').value = ""
 })
 
 
